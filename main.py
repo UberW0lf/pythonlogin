@@ -123,12 +123,12 @@ def registerrestaurant():
             # si cuenta existe y verificaciones de validacion
             if restaurant:
                 msg = 'Este restaurante ya existe!'
-            # elif not re.match(r'[A-Za-z0-9]+', name):
-            #     msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
-            # elif not re.match(r'[A-Za]+', country):
-            #     msg = 'El nombre del país debe contener solamente letras!'
-            # elif not re.match(r'[A-Za]+', type):
-            #     msg = 'El tipo de restaurante debe contener solamente letras!'
+            elif not re.match(r'[A-Za-z0-9]+', name):
+                msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
+            elif not re.match(r'[A-Za]+', country):
+                msg = 'El nombre del país debe contener solamente letras!'
+            elif not re.match(r'[A-Za]+', type):
+                msg = 'El tipo de restaurante debe contener solamente letras!'
             elif not name or not country or not type:
                 msg = 'Por favor llenar informaciones!'
             else:
@@ -149,14 +149,17 @@ def deleterestaurant():
     if 'loggedin' in session:
 
         msg = ''
-
         if request.method == 'POST' and 'rid' in request.form:
             rid = request.form['rid']
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('DELETE FROM restaurant WHERE rid = %s', (rid, ))
-            mysql.connection.commit()
-            msg = 'Has borrado el restaurante!'
-
+            cursor.execute('SELECT * FROM restaurant WHERE rid = %s', (rid,))
+            restaurant = cursor.fetchone()
+            if restaurant:
+                cursor.execute('DELETE FROM restaurant WHERE rid = %s', (rid,))
+                mysql.connection.commit()
+                msg = 'Has borrado el restaurante!'
+            else:
+                msg = 'Este rid no existe!'
         return render_template('deleterestaurant.html',  msg=msg)
 
     return redirect(url_for('login'))
@@ -188,30 +191,25 @@ def editrestaurant():
             name = request.form['name']
             country = request.form['country']
             type = request.form['type']
-            # verificar si cuenta ya existe
-           # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-           # cursor.execute('SELECT * FROM restaurant WHERE name = %s', (rid,))
-            #rid = cursor.fetchone()
-            # si cuenta existe y verificaciones de validacion
-           # if rid:
-               # msg = 'Este restaurante no existe!'
-            # elif not re.match(r'[A-Za-z0-9]+', name):
-            #     msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
-            # elif not re.match(r'[A-Za]+', country):
-            #     msg = 'El nombre del país debe contener solamente letras!'
-            # elif not re.match(r'[A-Za]+', type):
-            #     msg = 'El tipo de restaurante debe contener solamente letras!'
-            #elif not name or not country or not type:
-                #msg = 'Por favor llenar informaciones!'
-            #else:
-                # restaurante no existe y los datos son validos, se crea la cuenta
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('UPDATE restaurant set name = %s, country =  %s, type=  %s WHERE rid = %s ', (name, country, type, rid), )
-            mysql.connection.commit()
-            msg = 'Has modificado tu restaurante!'
-        elif request.method == 'POST':
-            # informaciones estan vacias
-            msg = 'Por favor llenar informaciones!'
+            cursor.execute('SELECT * FROM restaurant WHERE rid = %s', (rid,))
+            restaurant = cursor.fetchone()
+            if not restaurant:
+                msg = 'Este id no existe!'
+            elif not re.match(r'[A-Za-z0-9]+', name):
+                msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
+            elif not re.match(r'[A-Za]+', country):
+                msg = 'El nombre del país debe contener solamente letras!'
+            elif not re.match(r'[A-Za]+', type):
+                msg = 'El tipo de restaurante debe contener solamente letras!'
+            elif not name or not country or not type:
+                msg = 'Por favor llenar informaciones!'
+            else:
+                cursor.execute('UPDATE restaurant set name = %s, country =  %s, type=  %s WHERE rid = %s ', (name, country, type, rid), )
+                mysql.connection.commit()
+                msg = 'Has modificado tu restaurante!'
+
+                # informaciones estan vacias
         return render_template('editrestaurant.html', msg=msg)
 # usuario no esta logado
     return redirect(url_for('login'))
