@@ -110,34 +110,35 @@ def registerrestaurant():
     # mensaje de error
     msg = ''
     # verificar si usuario esta logado
-    # if 'loggedin' in session:
-    if request.method == 'POST' and 'name' in request.form and 'country' in request.form and 'type' in request.form:
-        name = request.form['name']
-        country = request.form['country']
-        type = request.form['type']
-        # verificar si cuenta ya existe
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM restaurant WHERE name = %s', (name,))
-        restaurant = cursor.fetchone()
-        # si cuenta existe y verificaciones de validacion
-        if restaurant:
-            msg = 'Este restaurante ya existe!'
-        # elif not re.match(r'[A-Za-z0-9]+', name):
-        #     msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
-        # elif not re.match(r'[A-Za]+', country):
-        #     msg = 'El nombre del país debe contener solamente letras!'
-        # elif not re.match(r'[A-Za]+', type):
-        #     msg = 'El tipo de restaurante debe contener solamente letras!'
-        elif not name or not country or not type:
+    if 'loggedin' in session:
+        if request.method == 'POST' and 'name' in request.form and 'country' in request.form and 'type' in request.form:
+            name = request.form['name']
+            country = request.form['country']
+            type = request.form['type']
+            # verificar si cuenta ya existe
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM restaurant WHERE name = %s', (name,))
+            restaurant = cursor.fetchone()
+            # si cuenta existe y verificaciones de validacion
+            if restaurant:
+                msg = 'Este restaurante ya existe!'
+            # elif not re.match(r'[A-Za-z0-9]+', name):
+            #     msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
+            # elif not re.match(r'[A-Za]+', country):
+            #     msg = 'El nombre del país debe contener solamente letras!'
+            # elif not re.match(r'[A-Za]+', type):
+            #     msg = 'El tipo de restaurante debe contener solamente letras!'
+            elif not name or not country or not type:
+                msg = 'Por favor llenar informaciones!'
+            else:
+                # restaurante no existe y los datos son validos, se crea la cuenta
+                cursor.execute('INSERT INTO restaurant VALUES (NULL, %s, %s, %s)', (name, country, type,))
+                mysql.connection.commit()
+                msg = 'Has registrado tu restaurante!'
+        elif request.method == 'POST':
+            # informaciones estan vacias
             msg = 'Por favor llenar informaciones!'
-        else:
-            # restaurante no existe y los datos son validos, se crea la cuenta
-            cursor.execute('INSERT INTO restaurant VALUES (NULL, %s, %s, %s)', (name, country, type,))
-            mysql.connection.commit()
-            msg = 'Has registrado tu restaurante!'
-    elif request.method == 'POST':
-        # informaciones estan vacias
-        msg = 'Por favor llenar informaciones!'
-    return render_template('registerrestaurant.html', msg=msg)
+        return render_template('registerrestaurant.html', msg=msg)
 # usuario no esta logado
-# return redirect(url_for('login'))
+    return redirect(url_for('login'))
+
