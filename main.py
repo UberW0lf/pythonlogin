@@ -143,6 +143,7 @@ def registerrestaurant():
 # usuario no esta logado
     return redirect(url_for('login'))
 
+# borrar restaurante
 @app.route('/pythonlogin/home/deleterestaurant', methods=['GET', 'POST'])
 def deleterestaurant():
     if 'loggedin' in session:
@@ -154,8 +155,24 @@ def deleterestaurant():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('DELETE FROM restaurant WHERE rid = %s', (rid, ))
             mysql.connection.commit()
-            msg = 'Has borrado tu restaurante!'
+            msg = 'Has borrado el restaurante!'
 
         return render_template('deleterestaurant.html',  msg=msg)
+
+    return redirect(url_for('login'))
+
+# Ver restaurantes
+@app.route('/pythonlogin/home/readrestaurant', methods=['GET'])
+def readrestaurant():
+    if 'loggedin' in session:
+        msg = ''
+
+        if request.method == 'GET':
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM restaurant')
+            restaurant = cursor.fetchall()
+            mysql.connection.commit()
+
+        return render_template('readrestaurant.html',  restaurant=restaurant)
 
     return redirect(url_for('login'))

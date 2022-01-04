@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Lista de Restaurantes</h1>
+</div>
+<div class="table-responsive-xl">
+    <table  class="table table-striped">
+
+
+        <thead class="thead-dark">
+        <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>País</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        {% for restaurant in restaurant %}
+            <tbody>
+                <tr>
+                    <td>{{ restaurant['rid'] }}</td>
+                    <td>{{ restaurant['name'] }}</td>
+                    <td>{{ restaurant['country'] }}</td>
+                    <td>{{ restaurant['type'] }}</td>
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table><br>
+</div>
+{% endblock %}
