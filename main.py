@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
+
 
 app = Flask(__name__)
 
@@ -142,3 +143,19 @@ def registerrestaurant():
 # usuario no esta logado
     return redirect(url_for('login'))
 
+@app.route('/pythonlogin/home/deleterestaurant', methods=['GET', 'POST'])
+def deleterestaurant():
+    if 'loggedin' in session:
+
+        msg = ''
+
+        if request.method == 'POST' and 'rid' in request.form:
+            rid = request.form['rid']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('DELETE FROM restaurant WHERE rid = %s', (rid, ))
+            mysql.connection.commit()
+            msg = 'Has borrado tu restaurante!'
+
+        return render_template('deleterestaurant.html',  msg=msg)
+
+    return redirect(url_for('login'))
