@@ -9,6 +9,20 @@ body {
     background-color: #435165;
     margin: 0;
 }
+
+.editrestaurant a, .registerrestaurant a, .deleterestaurant a, .readrestaurant a {
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    padding: 15px;
+    background-color: #3274d6;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    transition: background-color 0.2s;
+}
+
 .login, .register, .registerrestaurant, .deleterestaurant, .editrestaurant {
     width: 400px;
     background-color: #ffffff;
