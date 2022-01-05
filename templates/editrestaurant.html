@@ -2,14 +2,18 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Registrar Restaurante</title>
+		<title>Editar Restaurante</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 	</head>
 	<body>
-		<div class="registerrestaurant">
+		<div class="editrestaurant">
 			<h1>Registrar Restaurante</h1>
-			<form action="{{ url_for('registerrestaurant') }}" method="post" autocomplete="off">
+			<form action="{{ url_for('editrestaurant') }}" method="post" autocomplete="off">
+				<label for="rid">
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="bytes" name="rid" placeholder="Id do Restaurante" id="rid" required>
 				<label for="name">
 					<i class="fas fa-user"></i>
 				</label>
@@ -23,7 +27,7 @@
 				</label>
 				<input type="text" name="type" placeholder="Tipo de Restaurante" id="type" required>
 				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Registrar">
+				<input type="submit" value="Editar">
 			</form>
 		</div>
 	</body>

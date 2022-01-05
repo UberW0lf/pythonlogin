@@ -176,3 +176,42 @@ def readrestaurant():
         return render_template('readrestaurant.html',  restaurant=restaurant)
 
     return redirect(url_for('login'))
+
+
+@app.route('/pythonlogin/home/editrestaurant', methods=['GET', 'POST'])
+def editrestaurant():
+    # mensaje de error
+    msg = ''
+    if 'loggedin' in session:
+        if request.method == 'POST' and 'rid' in request.form  and 'name' in request.form and 'country' in request.form and 'type' in request.form:
+            rid = request.form['rid']
+            name = request.form['name']
+            country = request.form['country']
+            type = request.form['type']
+            # verificar si cuenta ya existe
+           # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+           # cursor.execute('SELECT * FROM restaurant WHERE name = %s', (rid,))
+            #rid = cursor.fetchone()
+            # si cuenta existe y verificaciones de validacion
+           # if rid:
+               # msg = 'Este restaurante no existe!'
+            # elif not re.match(r'[A-Za-z0-9]+', name):
+            #     msg = 'El nombre del restaurante debe contener solamente letras y numeros!'
+            # elif not re.match(r'[A-Za]+', country):
+            #     msg = 'El nombre del país debe contener solamente letras!'
+            # elif not re.match(r'[A-Za]+', type):
+            #     msg = 'El tipo de restaurante debe contener solamente letras!'
+            #elif not name or not country or not type:
+                #msg = 'Por favor llenar informaciones!'
+            #else:
+                # restaurante no existe y los datos son validos, se crea la cuenta
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('UPDATE restaurant set name = %s, country =  %s, type=  %s WHERE rid = %s ', (name, country, type, rid), )
+            mysql.connection.commit()
+            msg = 'Has modificado tu restaurante!'
+        elif request.method == 'POST':
+            # informaciones estan vacias
+            msg = 'Por favor llenar informaciones!'
+        return render_template('editrestaurant.html', msg=msg)
+# usuario no esta logado
+    return redirect(url_for('login'))
